@@ -4,12 +4,12 @@
   "ADMINS": [
     ""
   ],
-  "BOTNAME": "BOTNAME",
+  "BOTNAME": "MOIST Confess Wall",
   "PREFIX": "/",
   "THEME_SETUP": {
     "THEME": "Fiery",
-    "ADMIN": "Your Name",
-    "TITLE": "PAGEBOT",
+    "ADMIN": "Nico Bagongon Adajar",
+    "TITLE": "MOIST Confess Wall",
     "HTML": [
       "#CE2F16",
       "#fe8916",
