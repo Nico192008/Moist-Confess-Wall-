@@ -16,5 +16,5 @@ module.exports.run = async function({ event, args }) {
    * message_reply
    * message
    * mark_as_seen
-   * @YanMaglinte **/
+   * @Nico Adajar **/
 };
