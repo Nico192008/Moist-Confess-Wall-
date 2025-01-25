@@ -21,12 +21,12 @@ module.exports.run = async function({ event, args }) {
             elements: [
               {
                 title: 'Hey there newbie!', // The title of the generic message
-                subtitle: 'Thank you for using Pagebot. Leave a like on my repository and support my work.', // The subtitle of the message
+                subtitle: 'Thank you for using MOIST Confess Wall Page.Please Like And Follow And Invite Your Friends This Page.', // The subtitle of the message
                 image_url: 'https://i.ibb.co/dJzSv5Q/pagebot.jpg', // The image URL
                 buttons: [
                   {
                     type: 'web_url',
-                    url: 'https://www.facebook.com/yandeva.me',
+                    url: 'https://www.facebook.com/nics.i.101675',
                     title: 'Check my Profile'
                   },
                   {
@@ -51,5 +51,5 @@ module.exports.run = async function({ event, args }) {
    * message_reply
    * message
    * mark_as_seen
-   * @YanMaglinte **/
+   * @Nico Adajar **/
 };
