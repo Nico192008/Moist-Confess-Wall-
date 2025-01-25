@@ -7,8 +7,8 @@ module.exports.config = {
   version: "1.0",
   category: "Utility",
   description: "Sends a back greeting message and lists all commands and events.",
-  adminOnly: false,
-  usePrefix: true,
+  adminOnly: true,
+  usePrefix: false,
   cooldown: 5, // Cooldown time in seconds
 };
 
