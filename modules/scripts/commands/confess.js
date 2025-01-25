@@ -1,43 +1,42 @@
-const axios = require('axios');
-
-module.exports = {
-  name: 'confess',
-  description: 'Post a message to a Facebook Page',
-  usage: 'postfb [message]',
-  author: 'Nics',
-
-  async execute(senderId, args, pageAccessToken) {
-    try {
-      const message = args.join(' '); // Combine the message parts
-      if (!message) {
-        return sendMessage(senderId, { text: 'Please provide a message to post on the page.' }, pageAccessToken);
-      }
-
-      // Replace 'your_page_id' with the actual Page ID
-      const pageId = '61572215923283';
-      
-      // Send the message to the Facebook Page feed
-      const { data } = await axios.post(`https://graph.facebook.com/v13.0/${pageId}/feed`, {
-        message,
-        access_token: pageAccessToken,
-      });
-
-      if (data.id) {
-        const postUrl = `https://www.facebook.com/${pageId}/posts/${data.id}`;
-        sendMessage(senderId, { text: `Post created successfully! View it here: ${postUrl}` }, pageAccessToken);
-      } else {
-        sendMessage(senderId, { text: 'Failed to create the post. Please try again later.' }, pageAccessToken);
-      }
-    } catch (error) {
-      sendMessage(senderId, { text: 'An error occurred while posting. Please try again later.' }, pageAccessToken);
-    }
-  }
+module.exports.config = {
+  name: "postfb",
+  author: "Yan Maglinte",
+  version: "1.0",
+  category: "Social",
+  description: "Posts a message to a Facebook Page.",
+  adminOnly: false,
+  usePrefix: true,
+  cooldown: 5, // Cooldown time in seconds
 };
 
-function sendMessage(senderId, message, pageAccessToken) {
-  // Function to send message back to the user (you can customize it based on your bot's sendMessage method)
-  axios.post(`https://graph.facebook.com/v13.0/me/messages?access_token=${pageAccessToken}`, {
-    recipient: { id: senderId },
+module.exports.run = function ({ event, args, api, pageAccessToken }) {
+  const message = args.join(' '); // Combine the arguments to form the message
+
+  if (!message) {
+    return api.sendMessage("Please provide a message to post on the page.", event.threadID);
+  }
+
+  const pageId = "61572215923283";  // Replace with your actual Page ID
+
+  // Send the post request to Facebook's Graph API
+  api.httpPost(`https://graph.facebook.com/v13.0/${pageId}/feed`, {
     message: message,
-  }).catch(error => console.log(error));
-}
+    access_token: pageAccessToken,
+  }, (err, info) => {
+    if (err) {
+      return api.sendMessage("Failed to create the post. Please try again later.", event.threadID);
+    }
+
+    try {
+      if (typeof info == "string") info = JSON.parse(info.replace("for (;;);", ""));
+      const postId = info.id;
+      const postUrl = `https://www.facebook.com/${pageId}/posts/${postId}`;
+
+      // If post is successful, send the post URL back to the user
+      api.sendMessage(`Post created successfully! You can view it here: ${postUrl}`, event.threadID);
+    } catch (e) {
+      api.sendMessage("Post creation failed, please try again later.", event.threadID);
+    }
+  });
+};
+        
