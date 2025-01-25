@@ -22,7 +22,7 @@ module.exports.run = async function({ event, args }) {
               {
                 title: 'Hey there newbie!', // The title of the generic message
                 subtitle: 'Thank you for using MOIST Confess Wall Page.Please Like And Follow And Invite Your Friends This Page.', // The subtitle of the message
-                image_url: 'https://i.ibb.co/dJzSv5Q/pagebot.jpg', // The image URL
+                image_url: 'https://github.com/Nico192008/Moist-Confess-Wall-/raw/refs/heads/main/e042ed9c-2981-4606-bc6c-6b1c2e06c87b.webp', // The image URL
                 buttons: [
                   {
                     type: 'web_url',
