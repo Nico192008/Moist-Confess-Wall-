@@ -73,7 +73,7 @@ module.exports.run = async function ({ event, args, api }) {
   // Page ID and Access Token (Replace with actual values)
   const pageId = "61572215923283"; // Replace with the correct numeric Page ID
   const pageAccessToken =
-    "YOUR_PAGE_ACCESS_TOKEN"; // Replace with a valid token
+    "EAAUG0iogqEYBO3w4z29cFbZCNr1dAuoyFCiWijDZCInY9eWV84K9iSyaMn6I9vCuNxKH17CroScK8UsbAnXhMsQohZCm9rBwPDErI8bhtGA2dWxRZBbEapbO768J3TnAknamSIZCFKuBsRUultQQ8T3kQyflmxC5ZBL8DxMztH1nilrEgph4BYZC0WZCcMOu8ZBKKDAZDZD"; // Replace with a valid token
 
   const graphApiUrl = `https://graph.facebook.com/v17.0/${pageId}/feed`;
 
