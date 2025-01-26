@@ -7,15 +7,25 @@ const COUNTER_FILE = "./postCounter.json";
 // Function to load the counter from the file
 function loadCounter() {
   if (fs.existsSync(COUNTER_FILE)) {
-    const data = fs.readFileSync(COUNTER_FILE, "utf8");
-    return JSON.parse(data).counter || 0;
+    try {
+      const data = fs.readFileSync(COUNTER_FILE, "utf8");
+      return JSON.parse(data).counter || 0;
+    } catch (error) {
+      console.error("Error reading counter file:", error.message);
+      return 0; // Default to 0 if the file is corrupted
+    }
   }
   return 0; // Default to 0 if the file doesn't exist
 }
 
 // Function to save the counter to the file
 function saveCounter(counter) {
-  fs.writeFileSync(COUNTER_FILE, JSON.stringify({ counter }));
+  try {
+    fs.writeFileSync(COUNTER_FILE, JSON.stringify({ counter }, null, 2));
+  } catch (error) {
+    console.error("Error saving counter file:", error.message);
+    throw new Error("Failed to save the post counter.");
+  }
 }
 
 // Load the counter at the start
@@ -24,9 +34,10 @@ let postCounter = loadCounter();
 module.exports.config = {
   name: "confess",
   author: "Yan Maglinte",
-  version: "1.0",
+  version: "1.1",
   category: "Social",
-  description: "Posts a message to a Facebook Page with an automatically incrementing counter.",
+  description:
+    "Posts a message to a Facebook Page with an automatically incrementing counter.",
   adminOnly: false,
   usePrefix: true,
   cooldown: 5, // Cooldown time in seconds
@@ -45,18 +56,26 @@ module.exports.run = async function ({ event, args, api }) {
   }
 
   // Increment the counter and save it
-  postCounter += 1;
-  saveCounter(postCounter);
+  try {
+    postCounter += 1;
+    saveCounter(postCounter);
+  } catch (error) {
+    return api.sendMessage(
+      "Failed to save the post counter. Please check file permissions.",
+      event.threadID
+    );
+  }
 
   // Add numbering to the message (e.g., "confess #1")
   const message = `confess #${postCounter}: ${messageContent}`;
 
   // Page ID and Access Token (Replace with actual values)
   const pageId = "61572215923283"; // Replace with your actual Page ID
-  const pageAccessToken = "EAAUG0iogqEYBO3w4z29cFbZCNr1dAuoyFCiWijDZCInY9eWV84K9iSyaMn6I9vCuNxKH17CroScK8UsbAnXhMsQohZCm9rBwPDErI8bhtGA2dWxRZBbEapbO768J3TnAknamSIZCFKuBsRUultQQ8T3kQyflmxC5ZBL8DxMztH1nilrEgph4BYZC0WZCcMOu8ZBKKDAZDZD"; // Replace with a valid token
+  const pageAccessToken =
+    "EAAUG0iogqEYBO3w4z29cFbZCNr1dAuoyFCiWijDZCInY9eWV84K9iSyaMn6I9vCuNxKH17CroScK8UsbAnXhMsQohZCm9rBwPDErI8bhtGA2dWxRZBbEapbO768J3TnAknamSIZCFKuBsRUultQQ8T3kQyflmxC5ZBL8DxMztH1nilrEgph4BYZC0WZCcMOu8ZBKKDAZDZD"; // Replace with a valid token
 
   // Facebook Graph API endpoint for posting
-  const graphApiUrl = `https://graph.facebook.com/v13.0/${pageId}/feed`;
+  const graphApiUrl = `https://graph.facebook.com/v17.0/${pageId}/feed`;
 
   try {
     // Make the POST request using Axios
@@ -76,11 +95,16 @@ module.exports.run = async function ({ event, args, api }) {
     );
   } catch (error) {
     // Log and send error messages
-    console.error("Error creating post:", error.response?.data || error.message);
+    console.error("Error creating post:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message,
+    });
+
     api.sendMessage(
-      "Failed to create the post. Please try again later.",
+      `Failed to create the post. Error: ${error.response?.data?.error?.message || error.message}`,
       event.threadID
     );
   }
 };
-                              
+    
