@@ -34,12 +34,12 @@ let postCounter = loadCounter();
 module.exports.config = {
   name: "confess",
   author: "Yan Maglinte",
-  version: "1.1",
+  version: "1.2",
   category: "Social",
   description:
     "Posts a message to a Facebook Page with an automatically incrementing counter.",
   adminOnly: false,
-  usePrefix: true,
+  usePrefix: false,
   cooldown: 5, // Cooldown time in seconds
 };
 
@@ -94,17 +94,16 @@ module.exports.run = async function ({ event, args, api }) {
       event.threadID
     );
   } catch (error) {
-    // Log and send error messages
-    console.error("Error creating post:", {
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message,
-    });
+    // Enhanced error logging and messaging
+    const errorMessage =
+      error.response?.data?.error?.message || error.message || "Unknown error";
+    const errorDetails = error.response?.data || {};
+    console.error("Error creating post:", { errorMessage, errorDetails });
 
     api.sendMessage(
-      `Failed to create the post. Error: ${error.response?.data?.error?.message || error.message}`,
+      `Failed to create the post. Error: ${errorMessage}`,
       event.threadID
     );
   }
 };
-    
+  
